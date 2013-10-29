@@ -6,7 +6,7 @@
 #                                                                                                       #
 #           author: t. isobe (tisobe@cfa.harvard.edu)                                                   #
 #                                                                                                       #
-#           Last Update: Oct 24, 2013                                                                   #
+#           Last Update: Oct 28, 2013                                                                   #
 #                                                                                                       #
 #########################################################################################################
 
@@ -126,7 +126,7 @@ def test_prep():
         os.system(cmd)
     
         cmd = "cp /data/mta/Script/ACIS/Count_rate/house_keeping/Test_data_save/old_file_list  "  
-        cmd = cmd + "web_dir/house_keeping/."
+        cmd = cmd + web_dir + "/house_keeping/."
         os.system(cmd)
     
         cmd = "cp /data/mta/Script/ACIS/Count_rate/house_keeping/Test_data_save/rad_data " 

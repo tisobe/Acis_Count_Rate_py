@@ -81,12 +81,14 @@ def print_html_page(comp_test, in_year=1, in_mon=1):
 #---  find today's date and convert them appropriately
 #
     if comp_test == 'test':
+        bchk  = 0
         tday  = 13;
         umon  = 2;
         uyear = 2013;
 
         cmon  = tcnv.changeMonthFormat(umon)
         cmon  = cmon.upper()
+        ldate = str(uyear) + '-' + str(umon) + '-' + str(tday)          #-- update date
     else:
 #
 #--- find today's date
