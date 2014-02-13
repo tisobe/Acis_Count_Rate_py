@@ -146,10 +146,10 @@ def test_prep():
 #--- pylab plotting routine related modules
 #
 
-from pylab import *
-import matplotlib.pyplot as plt
-import matplotlib.font_manager as font_manager
-import matplotlib.lines as lines
+#from pylab import *
+#import matplotlib.pyplot as plt
+#import matplotlib.font_manager as font_manager
+#import matplotlib.lines as lines
 
 if __name__ == '__main__':
 #

@@ -6,7 +6,7 @@
 #                                                                                                   #
 #           author: t. isobe (tisobe@cfa.harvard.edu)                                               #
 #                                                                                                   #
-#           Last Update: Oct 24, 2013                                                               #
+#           Last Update: Feb 13, 2014                                                               #
 #                                                                                                   #
 #####################################################################################################
 
@@ -14,11 +14,9 @@ import os
 import sys
 import re
 import string
-import random
 import operator
 import math
 import numpy
-
 #
 #--- pylab plotting routine related modules
 #
@@ -28,6 +26,12 @@ if __name__ == '__main__':
 
     mpl.use('Agg')
 
+from pylab import *
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as font_manager
+import matplotlib.lines as lines
+
+import random                   #--- random must be called after pylab
 #
 #--- check whether this is a test case
 #
@@ -370,6 +374,8 @@ def generate_ephin_rate_plot(directory):
     title_list = ['P4', 'E150', 'E300', 'E1300']
     outname    = directory + '/ephin_rate.png'
 
+    plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname)
+
 #----------------------------------------------------------------------------------------------
 #--- plot_panel: createa single pamel plot                                                  ---
 #----------------------------------------------------------------------------------------------
@@ -611,17 +617,15 @@ def find_plot_range(p_set_list):
 
 
 #--------------------------------------------------------------------
-
 #
 #--- pylab plotting routine related modules
 #
-from pylab import *
-import matplotlib.pyplot as plt
-import matplotlib.font_manager as font_manager
-import matplotlib.lines as lines
+#from pylab import *
+#import matplotlib.pyplot as plt
+#import matplotlib.font_manager as font_manager
+#import matplotlib.lines as lines
 
 if __name__ == '__main__':
 
-    directory = '/data/mta_www/mta_dose_count2/OCT2013/'
     create_plots(directory)
 
