@@ -2,7 +2,7 @@
 
 #################################################################################################
 #                                                                                               #
-#       plot_count_rate.py: update/create html page related acis does plots                     #
+#        print_html_page.py update/create html page related acis does plots                     #
 #                                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                                       #
 #                                                                                               #
@@ -35,8 +35,8 @@ if len(sys.argv) == 2:
 if comp_test == 'test' or comp_test == 'test2':
     path = '/data/mta/Script/ACIS/Count_rate/house_keeping/dir_list_py_test'
 else:
-#    path = '/data/mta/Script/ACIS/Count_rate/house_keeping/dir_list_py'
-    path = '/data/mta/Script/ACIS/Count_rate/house_keeping2/dir_list_py'
+    path = '/data/mta/Script/ACIS/Count_rate/house_keeping/dir_list_py'
+#    path = '/data/mta/Script/ACIS/Count_rate/house_keeping2/dir_list_py'
 
 f= open(path, 'r')
 data = [line.strip() for line in f.readlines()]
@@ -168,52 +168,57 @@ def print_main_html(ldate, this_year, this_month):
     line = line + 'span.nobr {white-space:nowrap;}\n'
     line = line + '</style>\n'
     line = line + '<title>ACIS Count Rate Plots </title>\n'
+    line = line + '<script>\n'
+    line = line + 'function MyWindowOpener(imgname) {\n'
+    line = line + '    msgWindow=open("","displayname","toolbar=no,directories=no,menubar=no,location=no,scrollbars=no,status=no,width=732,height=560,resize=yes");\n'
+    line = line + '    msgWindow.document.close();\n'
+    line = line + '    msgWindow.document.write("<!DOCTYPE html>");\n'
+    line = line + '    msgWindow.document.write("<html><head><title>Bias plot:   "+imgname+"</title></head>");\n'
+    line = line + '    msgWindow.document.write("<<meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\' />");\n'
+    line = line + '    msgWindow.document.write("<body style=\'background-color:white\'>");\n'
+    line = line + '    msgWindow.document.write("<img src=\'./mta_days/mta_dose_count2/"+imgname+"\' style=\"width:692px;height:540px\"></body></html>");\n'
+    line = line + '    msgWindow.focus();\n'
+    line = line + '}\n'
+    line = line + '</script>\n'
+
+
+
+
+
     line = line + '</head>\n'
     line = line + '<body style="color:#FFFFFF;background-color:#000000;">\n'
 
     line = line + '<h2 style="color:aqua;text-align:center">ACIS Dose Plots</h2>\n'
     line = line + '<h3 style="text-align:center">Last Update: ' + ldate + '</h3>\n'
     line = line + '<hr />\n'
+
+#
+#--- the links to long term plots
+#
+    line = line + '<h3>Long Term Trend Plots</h3>\n'
+    line = line + '<p style="text-align:center">\n'
+    line = line + '<a href="javascript:MyWindowOpener(\'./long_term_plot.png\')"><img src="./long_term_plot.png" style="text-align:center; width: 60%"></a>\n'
+    line = line + '</p>\n'
+
+    line = line + '<h3>Monthly Averaged Plots</h3>\n'
+    line = line + '<p style="padding-bottom:20px">\n'
+
+    line = line + '<a href=./month_avg_img.html>Imaging CCDs</a><br />\n'
+    line = line + '<a href=./month_avg_spec.html>Front Side Spec CCDs</a><br />\n'
+    line = line + '<a href=./month_avg_bi.html>Back Side Spec CCDs</a><br />\n'
+    line = line + '</p>\n'
+    line = line + '<p style="padding-top:20px;padding-bottom:20px"><b> Please Select A Period</b> </p>\n'
+#
+#--- table explanation
+#
     line = line + '<p>\n'
-    line = line + 'The followings are plots of photon counts/sec for averages of 5min intervals against time (DOM).\n'
+    line = line + 'The following tabless list links to  plots of photon count rates  (counts/sec) for averages of 5min intervals against time (DOM).\n'
     line = line + 'They are simple photon counts for each CCD and not a back ground photon counts; \n'
     line = line + 'it means that no sources are removed from the computation.\n'
     line = line + '</p>\n'
     line = line + '\n'
-    line = line + '<p style="padding-top:20px;padding-bottom:20px"><b> Please Select A Period</b> </p>\n'
-    
-    line = line + '<table border=1>\n'
-    line = line + '<tr>\n'
-    line = line + '<th>Year</th>\n'
-
 #
-#--- first table from year 2000 to 2009
-#
-    for iyear in range(2000, 2010):
-        line = line +  '<th><b>' + str(iyear) + '</b></th>\n'
-
-    line = line + '</tr>' + "\n"
-
-    for dmon in range(1, 13):
-
-        cmon = tcnv.changeMonthFormat(dmon)
-        cmon = cmon.upper()
-        lmon = cmon.lower()
-        line = line +  '<tr><th>' + cmon + '</th>'
-
-        for ix in range(0, 10):
-            dyear     = 2000 + ix
-
-            line = line +  '<td>';
-            line = line +  '<a href=./'+ cmon + str(dyear) + '/acis_' + lmon + str(dyear) + '_dose_plot.html>'
-            line = line +  cmon + ' ' + str(dyear) + '</a></td>\n';
-
-        line = line +  '</tr>\n'
-        
-    line = line +  '</table>\n'
-
-#
-#--- second table from year 2010 to current
+#--- first table from year 2010 to current
 #
     
     line = line + '<div style="padding-top:40px"></div>\n'
@@ -257,21 +262,39 @@ def print_main_html(ldate, this_year, this_month):
         line = line +  '</tr>\n'
         
     line = line +  '</table>\n'
-#
-#--- the links to long term plots
-#
-    line = line + '<h3>Long Term Trend Plots</h3>\n'
-    line = line + '<p>\n'
-    line = line + '<a href=./long_term_plot.html>Photon Counts since Jan 2000</a>\n'
-    line = line + '</p>\n'
 
-    line = line + '<h3>Monthly Averaged Plots</h3>\n'
-    line = line + '<p style="padding-bottom:20px">\n'
+    line = line + '<div style="padding-bottom:40px"> </div>\n'
 
-    line = line + '<a href=./month_avg_img.html>Imaging CCDs</a><br />\n'
-    line = line + '<a href=./month_avg_spec.html>Front Side Spec CCDs</a><br />\n'
-    line = line + '<a href=./month_avg_bi.html>Back Side Spec CCDs</a><br />\n'
-    line = line + '</p>\n'
+#
+#--- second table from year 2000 to 2009
+#
+    
+    line = line + '<table border=1>\n'
+    line = line + '<tr>\n'
+    line = line + '<th>Year</th>\n'
+
+    for iyear in range(2000, 2010):
+        line = line +  '<th><b>' + str(iyear) + '</b></th>\n'
+
+    line = line + '</tr>' + "\n"
+
+    for dmon in range(1, 13):
+
+        cmon = tcnv.changeMonthFormat(dmon)
+        cmon = cmon.upper()
+        lmon = cmon.lower()
+        line = line +  '<tr><th>' + cmon + '</th>'
+
+        for ix in range(0, 10):
+            dyear     = 2000 + ix
+
+            line = line +  '<td>';
+            line = line +  '<a href=./'+ cmon + str(dyear) + '/acis_' + lmon + str(dyear) + '_dose_plot.html>'
+            line = line +  cmon + ' ' + str(dyear) + '</a></td>\n';
+
+        line = line +  '</tr>\n'
+        
+    line = line +  '</table>\n'
 #
 #--- links to monthly data files
 #

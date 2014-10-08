@@ -6,7 +6,7 @@
 #                                                                                                   #
 #           author: t. isobe (tisobe@cfa.harvard.edu)                                               #
 #                                                                                                   #
-#           Last Update: Feb 13, 2014                                                               #
+#           Last Update: Apr 07, 2014                                                               #
 #                                                                                                   #
 #####################################################################################################
 
@@ -26,6 +26,10 @@ if __name__ == '__main__':
 
     mpl.use('Agg')
 
+#import mpl.pyplot as plt
+#import mpl.font_manager as font_manager
+#import mpl.lines as lines
+#
 from pylab import *
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
@@ -50,7 +54,7 @@ if comp_test == 'test' or comp_test == 'test2':
     path = '/data/mta/Script/ACIS/Count_rate/house_keeping/dir_list_py_test'
 else:
     path = '/data/mta/Script/ACIS/Count_rate/house_keeping/dir_list_py'
-    path = '/data/mta/Script/ACIS/Count_rate/house_keeping2/dir_list_py'
+#    path = '/data/mta/Script/ACIS/Count_rate/house_keeping2/dir_list_py'
 
 f= open(path, 'r')
 data = [line.strip() for line in f.readlines()]
@@ -124,6 +128,10 @@ def generate_count_rate_plot(directory):
 #
     for ccd in range(0, 10):
         file = directory + '/ccd' + str(ccd)
+        chk  = mcf.chkFile(file)
+        if chk == 0:
+            continue
+
         f    = open(file, 'r')
         data = [line.strip() for line in f.readlines()]
         f.close()
@@ -208,7 +216,7 @@ def full_range_plot():
         mcf.rm_file(zspace)
 
         for ent in data:
-            f    = open(ent, 'r')
+            f     = open(ent, 'r')
             fdata = [line.strip() for line in f.readlines()]
             f.close()
     
@@ -222,7 +230,7 @@ def full_range_plot():
                 if mcf.chkNumeric(atemp[0]) and mcf.chkNumeric(atemp[1]):
                     xt = float(atemp[0])
                     yt = float(atemp[1]) 
-                    if xt >= 0 and xt < 10000 and yt >= 0:
+                    if xt >= 0 and xt < 20000 and yt >= 0:
                         sum += yt
                         sum2+= yt * yt
                         cnt += 1
@@ -263,7 +271,7 @@ def full_range_plot():
     title = 'ACIS Count Rate: CCD 7'
     outname = web_dir + '/acis_ccd7_dose_plot.png'
 
-    plot_panel(ccd7_x, ccd7_y, xname, yname, title, outname)
+    plot_panel(ccd7_x, ccd7_y, xname, yname, title, outname, autox='yes')
 #
 #--- long term plot (for ccd 5, 6, and 7)
 #
@@ -274,7 +282,7 @@ def full_range_plot():
     outname    = web_dir + '/long_term_plot.png'
     y_limit    = [1000, 1000, 1000]
 
-    plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname, ylim =2, y_limit=y_limit)
+    plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname, ylim =2, y_limit=y_limit, autox='yes')
 
 #
 #--- imaging ccds full history
@@ -285,7 +293,7 @@ def full_range_plot():
     title_list = ['CCD0', 'CCD1', 'CCD2', 'CCD3']
     outname    = web_dir + '/month_avg_img.png'
 
-    plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname, linew=0, mrk='+', ylim=1)
+    plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname, linew=0, mrk='+', ylim=1, autox='yes')
 #
 #--- spectral ccds full history
 #
@@ -295,7 +303,7 @@ def full_range_plot():
     title_list = ['CCD4', 'CCD6', 'CCD8', 'CCD9']
     outname    = web_dir + '/month_avg_spc.png'
 
-    plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname, linew=0, mrk='+', ylim=1)
+    plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname, linew=0, mrk='+', ylim=1, autox='yes')
 #
 #--- backside ccds full history
 #
@@ -305,9 +313,9 @@ def full_range_plot():
     title_list = ['CCD5', 'CCD7']
     outname    = web_dir + '/month_avg_bi.png'
 
-    plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname, linew=0, mrk='+', ylim=1)
+    plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname, linew=0, mrk='+', ylim=1, autox='yes')
 
-    plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname)
+    plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname, autox='yes')
 #
 #--- write out monthly average data
 #
@@ -350,6 +358,10 @@ def generate_ephin_rate_plot(directory):
     yname  = 'Count/Sec'
 
     file   = directory + '/ephin_rate'
+    chk  = mcf.chkFile(file)
+    if chk == 0:
+        return ""
+
     f      = open(file, 'r')
     data   = [line.strip() for line in f.readlines()]
     f.close()
@@ -380,7 +392,7 @@ def generate_ephin_rate_plot(directory):
 #--- plot_panel: createa single pamel plot                                                  ---
 #----------------------------------------------------------------------------------------------
 
-def plot_panel(xdata, ydata, xname, yname, title, outname):
+def plot_panel(xdata, ydata, xname, yname, title, outname, autox='no'):
 
     """
     createa single pamel plot
@@ -395,17 +407,20 @@ def plot_panel(xdata, ydata, xname, yname, title, outname):
 #
 #--- set plotting range
 #
-    xmin = min(xdata)
-    xmax = max(xdata)
-    diff = xmax - xmin
-
-    if diff == 0 and xmin > 0:
-        xmax = xmin + 1
+    xmin = int(min(xdata) - 1)
+    if autox == 'no':
+        xmax = xmin + 33
     else:
-        xmin -= 0.05 * diff
-        xmax += 0.05 * diff
-        if xmin < 0.0:
-            xmin = 0
+        xmax = max(xdata)
+        diff = xmax - xmin
+    
+        if diff == 0 and xmin > 0:
+            xmax = xmin + 1
+        else:
+            xmin -= 0.05 * diff
+            xmax += 0.05 * diff
+            if xmin < 0.0:
+                xmin = 0
 
     ymin = 0
     ymax = max(ydata)
@@ -422,7 +437,7 @@ def plot_panel(xdata, ydata, xname, yname, title, outname):
 #
 #---- set a few parameters
 #
-    mpl.rcParams['font.size'] = 9
+####    mpl.rcParams['font.size'] = 9
     props = font_manager.FontProperties(size=9)
     plt.subplots_adjust(hspace=0.08)
 #
@@ -463,7 +478,7 @@ def plot_panel(xdata, ydata, xname, yname, title, outname):
 #--- plot_multi_panel: create multiple panel plots                                          ---
 #----------------------------------------------------------------------------------------------
 
-def plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname, linew=0, mrk='.', ylim=0, y_limit=[]):
+def plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outname, linew=0, mrk='.', ylim=0, y_limit=[], autox='no'):
 
     """
     create multiple panel plots
@@ -488,6 +503,9 @@ def plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outn
 #--- set x plotting_range
 #
     (xmin, xmax) = find_plot_range(x_set_list)
+    xmin = int(xmin) -1
+    if autox == 'no':
+        xmax = xmin + 33
 #
 #--- if it is requested set limit
 #
@@ -500,7 +518,7 @@ def plot_multi_panel(x_set_list, y_set_list, xname, yname_list, title_list, outn
 #
 #---- set a few parameters
 #
-    mpl.rcParams['font.size'] = 9
+####    mpl.rcParams['font.size'] = 9
     props = font_manager.FontProperties(size=9)
     plt.subplots_adjust(hspace=0.08)
 

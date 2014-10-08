@@ -6,7 +6,7 @@
 #                                                                                                       #
 #           author: t. isobe (tisobe@cfa.harvard.edu)                                                   #
 #                                                                                                       #
-#           Last Update: Oct 28, 2013                                                                   #
+#           Last Update: Oct 02, 2014                                                                   #
 #                                                                                                       #
 #########################################################################################################
 
@@ -14,10 +14,24 @@ import os
 import sys
 import re
 import string
-import random
 import operator
 import math
 import numpy
+
+#
+#--- pylab plotting routine related modules
+#
+import matplotlib as mpl
+
+if __name__ == '__main__':
+
+    mpl.use('Agg')
+
+from pylab import *
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as font_manager
+import matplotlib.lines as lines
+
 
 #
 #--- check whether this is a test case
@@ -36,8 +50,8 @@ if len(sys.argv) == 2:
 if comp_test == 'test' or comp_test == 'test2':
     path = '/data/mta/Script/ACIS/Count_rate/house_keeping/dir_list_py_test'
 else:
-#    path = '/data/mta/Script/ACIS/Count_rate/house_keeping/dir_list_py'
-    path = '/data/mta/Script/ACIS/Count_rate/house_keeping2/dir_list_py'
+    path = '/data/mta/Script/ACIS/Count_rate/house_keeping/dir_list_py'
+#    path = '/data/mta/Script/ACIS/Count_rate/house_keeping2/dir_list_py'
 
 f= open(path, 'r')
 data = [line.strip() for line in f.readlines()]
@@ -68,6 +82,7 @@ import print_html_page            as phtml
 #
 #--- temp writing file name
 #
+import random
 rtail  = int(10000 * random.random())       #---- put a romdom # tail so that it won't mix up with other scripts space
 zspace = '/tmp/zspace' + str(rtail)
 
@@ -85,7 +100,7 @@ def count_rate_main(comp_test):
 #
 #--- update data files
 #
-    dir_save = udf.update_data_files(comp_test)
+    dir_save = udf.update_data_files()
 #
 #--- for the case the data are collected over two months period
 #
