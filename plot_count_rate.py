@@ -6,7 +6,7 @@
 #                                                                                                   #
 #           author: t. isobe (tisobe@cfa.harvard.edu)                                               #
 #                                                                                                   #
-#           Last Update: Apr 07, 2014                                                               #
+#           Last Update: Mar 26, 2015                                                               #
 #                                                                                                   #
 #####################################################################################################
 
@@ -210,10 +210,13 @@ def full_range_plot():
 
         cmd  = 'ls ' + web_dir + '/*/ccd' + str(ccd) + ' >' + zspace
         os.system(cmd)
-        f    = open(zspace, 'r')
-        data = [line.strip() for line in f.readlines()]
-        f.close()
-        mcf.rm_file(zspace)
+        try:
+            f    = open(zspace, 'r')
+            data = [line.strip() for line in f.readlines()]
+            f.close()
+            mcf.rm_file(zspace)
+        except:
+            continue
 
         for ent in data:
             f     = open(ent, 'r')
@@ -644,6 +647,14 @@ def find_plot_range(p_set_list):
 #import matplotlib.lines as lines
 
 if __name__ == '__main__':
+
+    if len(sys.argv) > 1:
+        directory = sys.argv[1]
+        directory.strip()
+
+    else:
+        print "please specify the directory"
+        exit(1)
 
     create_plots(directory)
 
